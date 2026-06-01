@@ -455,34 +455,6 @@
 </div>
 
 <script>
-(function () {
-  window.toggleChat = function (forceOpen) {
-    var widget = document.getElementById('chatWidget');
-    if (!widget) return;
-    var launcher = document.getElementById('chatLauncherBtn');
-    var shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !widget.classList.contains('open');
-    widget.classList.toggle('open', shouldOpen);
-    if (launcher) launcher.setAttribute('aria-expanded', String(shouldOpen));
-
-    var messages = document.getElementById('chatMessages');
-    if (shouldOpen && messages && !messages.children.length) {
-      var message = document.createElement('div');
-      message.className = 'chat-message bot';
-      message.textContent = 'Hola, soy el asistente de Tramitium. Puede preguntarme por trámites, precios, plazos o documentación.';
-      messages.appendChild(message);
-    }
-  };
-
-  document.addEventListener('DOMContentLoaded', function () {
-    var launcher = document.getElementById('chatLauncherBtn');
-    var close = document.getElementById('chatCloseBtn');
-    if (launcher) launcher.addEventListener('click', function () { window.toggleChat(); });
-    if (close) close.addEventListener('click', function () { window.toggleChat(false); });
-  });
-})();
-</script>
-
-<script>
 // IMPORTANTE:
 // 1) Ponga aquí su clave PUBLICABLE de Stripe (pk_test_... primero; pk_live_... cuando esté probado).
 // 2) La clave SECRETA de Stripe (sk_...) va SOLO en variables de entorno de Netlify, nunca aquí.
@@ -1451,6 +1423,13 @@ function clearChatMessages() {
   const messages = document.getElementById('chatMessages');
   if (messages) messages.innerHTML = '';
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const launcher = document.getElementById('chatLauncherBtn');
+  const close = document.getElementById('chatCloseBtn');
+  if (launcher) launcher.addEventListener('click', () => toggleChat());
+  if (close) close.addEventListener('click', () => toggleChat(false));
+});
 
 </script>
 </body>
