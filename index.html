@@ -1299,9 +1299,7 @@ function clearChatMessages() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const launcher = document.getElementById('chatLauncherBtn');
   const close = document.getElementById('chatCloseBtn');
-  if (launcher) launcher.addEventListener('click', () => toggleChat());
   if (close) close.addEventListener('click', () => toggleChat(false));
 });
 
