@@ -506,7 +506,6 @@ const SERVICES = {
   'merc-inscripcion': { tag: 'Registro Mercantil', title: 'Inscripción de Escritura Mercantil', price: 205, info: 'Presentación de constitución, modificación estatutaria, etc.', fields: withAuthorization([ { id: 'sociedad', label: 'Sociedad', type: 'text', required: true, full: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { id: 'tipo_escritura', label: 'Tipo', type: 'text', required: true } ]) },
   'merc-nota': { tag: 'Registro Mercantil', title: 'Nota Simple Mercantil', price: 25, info: 'Información registral básica de una sociedad.', fields: withAuthorization([ { id: 'sociedad', label: 'Sociedad', type: 'text', required: true, full: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true } ]) },
   'trafico-informe-matricula': { tag: 'Tráfico', title: 'Informe de Tráfico de un Vehículo por Matrícula', price: 25, info: 'Informe del vehículo solicitado a partir de su matrícula.', fields: [ { id: 'matricula', label: 'Matrícula del vehículo', type: 'text', required: true }, { id: 'titular_nombre', label: 'Nombre completo del titular del vehículo', type: 'text', required: true, full: true }, { id: 'titular_dni', label: 'DNI / NIE del titular del vehículo', type: 'text', required: true }, ...AUTH_FIELDS ] }
-}
 };
 
 function toggleMenu() { document.querySelector('.nav-links').classList.toggle('active'); }
