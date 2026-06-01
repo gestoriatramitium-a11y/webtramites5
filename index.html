@@ -212,6 +212,30 @@
   .success-text { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--text-mid); line-height: 1.7; max-width: 430px; margin: 0 auto 32px; }
   .success-ref { display: inline-block; background: var(--gold-pale); border: 1px solid var(--gold); padding: 10px 24px; font-size: 13px; color: var(--navy); letter-spacing: 2px; font-weight: 500; margin-bottom: 24px; }
   .small-link { text-align:center; font-size:11px; color:var(--text-light); margin-top:12px; cursor:pointer; text-decoration: underline; text-underline-offset: 3px; }
+  .chat-widget { position: fixed; right: clamp(16px, 3vw, 28px); bottom: clamp(16px, 3vw, 28px); z-index: 900; display: flex; flex-direction: column; align-items: flex-end; gap: 14px; font-family: 'Jost', sans-serif; }
+  .chat-panel { width: min(380px, calc(100vw - 32px)); height: min(600px, calc(100vh - 112px)); background: var(--cream); border: 1px solid rgba(201,168,76,0.35); box-shadow: 0 18px 54px rgba(7,15,31,0.28); display: none; flex-direction: column; overflow: hidden; }
+  .chat-widget.open .chat-panel { display: flex; animation: chatEnter 0.25s ease both; }
+  .chat-header { background: var(--navy); padding: 18px 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border-bottom: 1px solid rgba(201,168,76,0.25); }
+  .chat-header-title { font-family: 'Playfair Display', serif; color: var(--white); font-size: 18px; line-height: 1.2; }
+  .chat-header-subtitle { color: rgba(255,255,255,0.58); font-size: 12px; margin-top: 3px; line-height: 1.4; }
+  .chat-close { width: 34px; height: 34px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.22); background: transparent; color: rgba(255,255,255,0.72); cursor: pointer; font-size: 16px; transition: all 0.2s; }
+  .chat-close:hover { border-color: var(--gold); color: var(--gold); }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 12px; background: linear-gradient(180deg, var(--cream) 0%, #fffdf8 100%); }
+  .chat-message { max-width: 88%; padding: 12px 14px; font-size: 14px; line-height: 1.55; box-shadow: 0 6px 18px rgba(15,30,60,0.07); }
+  .chat-message.bot { align-self: flex-start; background: var(--white); border-left: 3px solid var(--gold); color: var(--text-dark); }
+  .chat-message.user { align-self: flex-end; background: var(--navy); color: var(--white); }
+  .chat-quick-actions { padding: 0 18px 14px; display: flex; gap: 8px; flex-wrap: wrap; background: #fffdf8; }
+  .chat-chip { border: 1px solid rgba(201,168,76,0.45); background: var(--white); color: var(--navy); padding: 8px 10px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+  .chat-chip:hover { background: var(--gold-pale); border-color: var(--gold); }
+  .chat-form { display: flex; gap: 8px; padding: 14px; border-top: 1px solid var(--border); background: var(--white); }
+  .chat-input { flex: 1; min-width: 0; border: 1px solid var(--border); padding: 12px 13px; font-family: 'Jost', sans-serif; font-size: 14px; color: var(--text-dark); outline: none; }
+  .chat-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); }
+  .chat-send { border: none; background: var(--gold); color: var(--navy); width: 46px; flex-shrink: 0; cursor: pointer; font-size: 18px; transition: all 0.2s; }
+  .chat-send:hover { background: var(--gold-light); }
+  .chat-launcher { border: none; background: var(--gold); color: var(--navy); min-width: 190px; min-height: 54px; padding: 0 20px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-size: 13px; font-weight: 500; letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer; box-shadow: 0 12px 34px rgba(7,15,31,0.28); transition: all 0.25s; }
+  .chat-launcher:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .chat-launcher-icon { font-size: 18px; line-height: 1; }
+  @keyframes chatEnter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
   .reveal { opacity: 1; transform: none; }
   ::-webkit-scrollbar { width: 6px; }
@@ -239,6 +263,10 @@
     .form-row { grid-template-columns: 1fr; }
     .process-steps { grid-template-columns: 1fr; }
     .intro-badge { position: relative; bottom: auto; left: auto; margin-top: -30px; margin-left: 20px; z-index: 2; width: max-content; }
+    .chat-widget { right: 12px; bottom: 12px; left: 12px; align-items: stretch; }
+    .chat-panel { width: 100%; height: min(560px, calc(100vh - 96px)); }
+    .chat-launcher { width: 100%; min-width: 0; }
+    .chat-message { max-width: 92%; }
   }
 </style>
 </head>
@@ -335,7 +363,7 @@
       </ul>
     </div>
     <div class="registry-card reveal">
-      <span class="registry-number">03</span><div class="registry-icon">▣</div><span class="registry-subtitle">Registro 03</span><h3 class="registry-title">Registro Mercantil</h3>
+      <span class="registry-number">03</span><div class="registry-icon">▣</div><span class="registry-subtitle">Registro 03</span><h3 class="registry-title">Registro Mercantil y Tr?fico</h3>
       <p class="registry-desc">Constitución y gestión de sociedades, depósito de cuentas y certificaciones de denominación social.</p>
       <ul class="services-list">
         <li onclick="openModal('merc-denominacion')">Denominación Social <span class="service-price">desde 40€</span></li>
@@ -406,6 +434,28 @@
   </div>
 </div>
 
+<div class="chat-widget" id="chatWidget">
+  <section class="chat-panel" aria-labelledby="chatTitle" aria-live="polite">
+    <div class="chat-header">
+      <div>
+        <h2 class="chat-header-title" id="chatTitle">Asistente Tramitium</h2>
+        <p class="chat-header-subtitle">Respuestas rápidas sobre trámites, precios y plazos.</p>
+      </div>
+      <button class="chat-close" type="button" onclick="toggleChat(false)" aria-label="Cerrar chat">✕</button>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-quick-actions" id="chatQuickActions" aria-label="Preguntas frecuentes"></div>
+    <form class="chat-form" onsubmit="submitChatMessage(event)">
+      <input class="chat-input" id="chatInput" type="text" placeholder="Escriba su pregunta..." autocomplete="off" aria-label="Pregunta para el asistente">
+      <button class="chat-send" type="submit" aria-label="Enviar pregunta">→</button>
+    </form>
+  </section>
+  <button class="chat-launcher" type="button" onclick="toggleChat()" aria-controls="chatWidget" aria-expanded="false">
+    <span class="chat-launcher-icon">?</span>
+    <span>¿Necesita ayuda?</span>
+  </button>
+</div>
+
 <script>
 // IMPORTANTE:
 // 1) Ponga aquí su clave PUBLICABLE de Stripe (pk_test_... primero; pk_live_... cuando esté probado).
@@ -430,22 +480,35 @@ function ensureStripe() {
   }
 }
 
+﻿const AUTH_FIELDS = [
+  { section: 'Representación y autorización' },
+  { id: 'rep_nombre', label: 'Nombre completo del representante / tercero', type: 'text', required: true, full: true },
+  { id: 'rep_dni', label: 'DNI / NIE del representante / tercero', type: 'text', required: true },
+  { id: 'autorizacion', label: 'Poder o autorización firmada', type: 'file', accept: '.pdf,.jpg,.jpeg,.png', required: true, full: true }
+];
+
+function withAuthorization(fields) { return [...fields, ...AUTH_FIELDS]; }
+
 const SERVICES = {
-  'prop-nota-simple': { tag: 'Registro de la Propiedad', title: 'Nota Simple Informativa', price: 35, info: 'La nota simple informa sobre la titularidad y cargas de una finca registral. Se tramita ante el Registro de la Propiedad correspondiente.', fields: [ { id: 'sol_nombre', label: 'Nombre del Solicitante', type: 'text', placeholder: 'Nombre completo', required: true }, { id: 'sol_dni', label: 'DNI / NIE', type: 'text', placeholder: 'XXXXXXXXX', required: true }, { id: 'sol_email', label: 'Correo Electrónico', type: 'email', placeholder: 'correo@ejemplo.com', required: true }, { section: 'Datos del Inmueble' }, { id: 'finca_dir', label: 'Dirección del Inmueble', type: 'text', placeholder: 'Calle, número, piso...', required: true, full: true }, { id: 'finca_municipio', label: 'Municipio', type: 'text', placeholder: 'Municipio', required: true }, { id: 'finca_provincia', label: 'Provincia', type: 'text', placeholder: 'Provincia', required: true } ] },
-  'prop-inscripcion': { tag: 'Registro de la Propiedad', title: 'Inscripción de Escritura', price: 85, info: 'Presentación telemática de escrituras de compraventa, herencia, donación, etc.', fields: [ { id: 'sol_nombre', label: 'Nombre del Solicitante', type: 'text', required: true }, { id: 'sol_dni', label: 'DNI / NIE', type: 'text', required: true }, { id: 'sol_email', label: 'Correo Electrónico', type: 'email', required: true }, { section: 'Datos de la Escritura' }, { id: 'tipo_escritura', label: 'Tipo de Escritura', type: 'select', options: ['Compraventa', 'Herencia', 'Donación', 'Hipoteca', 'Otra'], required: true }, { id: 'notario', label: 'Notario Autorizante', type: 'text', required: true }, { id: 'fecha_esc', label: 'Fecha de Escritura', type: 'date', required: true } ] },
-  'prop-certificacion': { tag: 'Registro de la Propiedad', title: 'Certificación Registral', price: 65, info: 'Documento oficial con eficacia jurídica sobre el estado de una finca.', fields: [ { id: 'sol_nombre', label: 'Nombre del Solicitante', type: 'text', required: true }, { id: 'sol_email', label: 'Correo Electrónico', type: 'email', required: true }, { id: 'finca_dir', label: 'Dirección Completa', type: 'text', required: true, full: true } ] },
-  'prop-cancelacion': { tag: 'Registro de la Propiedad', title: 'Cancelación de Carga', price: 120, info: 'Gestión de la cancelación registral de hipotecas u otras cargas.', fields: [ { id: 'sol_nombre', label: 'Propietario', type: 'text', required: true }, { id: 'sol_email', label: 'Correo Electrónico', type: 'email', required: true }, { id: 'finca_dir', label: 'Dirección', type: 'text', required: true, full: true }, { id: 'banco', label: 'Entidad / Banco', type: 'text', required: true } ] },
-  'prop-anotacion': { tag: 'Registro de la Propiedad', title: 'Anotación Preventiva', price: 90, info: 'Solicitud de anotación de demanda o embargo.', fields: [ { id: 'sol_nombre', label: 'Solicitante', type: 'text', required: true }, { id: 'sol_email', label: 'Email', type: 'email', required: true }, { id: 'finca_dir', label: 'Dirección Finca', type: 'text', required: true, full: true } ] },
-  'civil-nacimiento': { tag: 'Registro Civil', title: 'Certificado de Nacimiento', price: 30, info: 'Obtención del certificado literal, extracto o plurilingüe.', fields: [ { id: 'sol_nombre', label: 'Solicitante', type: 'text', required: true }, { id: 'sol_email', label: 'Correo', type: 'email', required: true }, { section: 'Datos del Inscrito' }, { id: 'inscrito_nombre', label: 'Nombre Inscrito', type: 'text', required: true, full: true }, { id: 'fecha_nac', label: 'Fecha Nacimiento', type: 'date', required: true }, { id: 'lugar_nac', label: 'Lugar Nacimiento', type: 'text', required: true } ] },
-  'civil-matrimonio': { tag: 'Registro Civil', title: 'Certificado de Matrimonio', price: 30, info: 'Certificado que acredita la celebración del matrimonio.', fields: [ { id: 'sol_email', label: 'Correo', type: 'email', required: true }, { id: 'conyuge1', label: 'Cónyuge 1', type: 'text', required: true }, { id: 'conyuge2', label: 'Cónyuge 2', type: 'text', required: true }, { id: 'fecha_mat', label: 'Fecha Matrimonio', type: 'date', required: true } ] },
-  'civil-defuncion': { tag: 'Registro Civil', title: 'Certificado de Defunción', price: 30, info: 'Documento acreditativo del fallecimiento.', fields: [ { id: 'sol_email', label: 'Correo', type: 'email', required: true }, { id: 'fallecido', label: 'Nombre Fallecido', type: 'text', required: true, full: true }, { id: 'fecha_def', label: 'Fecha Fallecimiento', type: 'date', required: true } ] },
-  'civil-fe-vida': { tag: 'Registro Civil', title: 'Fe de Vida y Estado', price: 45, info: 'Documento que acredita la vida y estado civil.', fields: [ { id: 'sol_nombre', label: 'Nombre', type: 'text', required: true, full: true }, { id: 'sol_email', label: 'Correo', type: 'email', required: true }, { id: 'estado_civil', label: 'Estado Civil', type: 'select', options: ['Soltero', 'Casado', 'Viudo', 'Divorciado'], required: true } ] },
-  'civil-cambio-nombre': { tag: 'Registro Civil', title: 'Cambio de Nombre', price: 150, info: 'Expediente de cambio o modificación de nombre.', fields: [ { id: 'sol_email', label: 'Correo', type: 'email', required: true }, { id: 'nombre_actual', label: 'Nombre Actual', type: 'text', required: true, full: true }, { id: 'nombre_nuevo', label: 'Nombre Nuevo', type: 'text', required: true, full: true } ] },
-  'merc-denominacion': { tag: 'Registro Mercantil', title: 'Denominación Social', price: 40, info: 'Reserva de denominación social para constitución.', fields: [ { id: 'sol_email', label: 'Correo', type: 'email', required: true }, { id: 'opcion1', label: 'Opción 1', type: 'text', required: true, full: true }, { id: 'opcion2', label: 'Opción 2', type: 'text', required: false, full: true } ] },
-  'merc-deposito': { tag: 'Registro Mercantil', title: 'Depósito de Cuentas Anuales', price: 120, info: 'Presentación de las cuentas anuales obligatorias.', fields: [ { id: 'sociedad', label: 'Sociedad', type: 'text', required: true, full: true }, { id: 'cif', label: 'CIF', type: 'text', required: true }, { id: 'sol_email', label: 'Correo', type: 'email', required: true }, { id: 'ejercicio', label: 'Ejercicio', type: 'text', placeholder:'Ej. 2025', required: true } ] },
-  'merc-certificacion': { tag: 'Registro Mercantil', title: 'Certificación Registral', price: 55, info: 'Certificado oficial sobre situación societaria.', fields: [ { id: 'sociedad', label: 'Sociedad', type: 'text', required: true, full: true }, { id: 'cif', label: 'CIF', type: 'text', required: true }, { id: 'sol_email', label: 'Correo', type: 'email', required: true } ] },
-  'merc-inscripcion': { tag: 'Registro Mercantil', title: 'Inscripción de Escritura', price: 140, info: 'Presentación de constitución, modificación estatutaria, etc.', fields: [ { id: 'sociedad', label: 'Sociedad', type: 'text', required: true, full: true }, { id: 'sol_email', label: 'Correo', type: 'email', required: true }, { id: 'tipo_escritura', label: 'Tipo', type: 'text', required: true } ] },
-  'merc-nota': { tag: 'Registro Mercantil', title: 'Nota Simple Mercantil', price: 35, info: 'Información registral básica de una sociedad.', fields: [ { id: 'sociedad', label: 'Sociedad', type: 'text', required: true, full: true }, { id: 'sol_email', label: 'Correo', type: 'email', required: true } ] }
+  'prop-nota-simple': { tag: 'Registro de la Propiedad', title: 'Nota Simple Informativa', price: 35, info: 'La nota simple informa sobre la titularidad y cargas de una finca registral. Se tramita ante el Registro de la Propiedad correspondiente.', fields: [ { id: 'sol_nombre', label: 'Nombre del solicitante original', type: 'text', placeholder: 'Nombre completo', required: true }, { id: 'sol_dni', label: 'DNI / NIE del solicitante original', type: 'text', placeholder: 'XXXXXXXXX', required: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', placeholder: 'correo@ejemplo.com', required: true }, { section: 'Datos del inmueble' }, { id: 'finca_dir', label: 'Dirección del inmueble', type: 'text', placeholder: 'Calle, número, piso...', required: true, full: true }, { id: 'finca_municipio', label: 'Municipio', type: 'text', placeholder: 'Municipio', required: true }, { id: 'finca_provincia', label: 'Provincia', type: 'text', placeholder: 'Provincia', required: true } ] },
+  'prop-inscripcion': { tag: 'Registro de la Propiedad', title: 'Inscripción de Escritura', price: 150, info: 'Presentación telemática de escrituras de compraventa, herencia, donación, etc.', fields: [ { id: 'sol_nombre', label: 'Nombre del solicitante original', type: 'text', required: true }, { id: 'sol_dni', label: 'DNI / NIE del solicitante original', type: 'text', required: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { section: 'Datos de la escritura' }, { id: 'tipo_escritura', label: 'Tipo de escritura', type: 'select', options: ['Compraventa', 'Herencia', 'Donación', 'Hipoteca', 'Otra'], required: true }, { id: 'notario', label: 'Notario autorizante', type: 'text', required: true }, { id: 'fecha_esc', label: 'Fecha de escritura', type: 'date', required: true } ] },
+  'prop-certificacion': { tag: 'Registro de la Propiedad', title: 'Certificación Registral', price: 95, info: 'Documento oficial con eficacia jurídica sobre el estado de una finca.', fields: [ { id: 'sol_nombre', label: 'Nombre del solicitante original', type: 'text', required: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { id: 'finca_dir', label: 'Dirección completa', type: 'text', required: true, full: true } ] },
+  'prop-cancelacion': { tag: 'Registro de la Propiedad', title: 'Cancelación de Carga', price: 230, info: 'Gestión de la cancelación registral de hipotecas u otras cargas.', fields: [ { id: 'sol_nombre', label: 'Nombre del solicitante original', type: 'text', required: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { id: 'finca_dir', label: 'Dirección', type: 'text', required: true, full: true }, { id: 'banco', label: 'Entidad / banco', type: 'text', required: true } ] },
+  'prop-anotacion': { tag: 'Registro de la Propiedad', title: 'Anotación Preventiva', price: 135, info: 'Solicitud de anotación de demanda o embargo.', fields: [ { id: 'sol_nombre', label: 'Nombre del solicitante original', type: 'text', required: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { id: 'finca_dir', label: 'Dirección finca', type: 'text', required: true, full: true } ] },
+  'prop-localizacion': { tag: 'Registro de la Propiedad', title: 'Nota de Localización de Propiedades', price: 25, info: 'Localización de propiedades inscritas a nombre del solicitante original.', fields: [ { id: 'sol_nombre', label: 'Nombre completo del solicitante original', type: 'text', required: true, full: true }, { id: 'sol_dni', label: 'DNI / NIE del solicitante original', type: 'text', required: true }, { id: 'sol_contacto', label: 'Datos de contacto del solicitante original', type: 'text', required: false, full: true } ] },
+  'civil-nacimiento': { tag: 'Registro Civil', title: 'Certificado de Nacimiento', price: 35, info: 'Obtención del certificado literal, extracto o plurilingüe.', fields: withAuthorization([ { id: 'sol_nombre', label: 'Nombre del solicitante original', type: 'text', required: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { section: 'Datos del inscrito' }, { id: 'inscrito_nombre', label: 'Nombre inscrito', type: 'text', required: true, full: true }, { id: 'fecha_nac', label: 'Fecha nacimiento', type: 'date', required: true }, { id: 'lugar_nac', label: 'Lugar nacimiento', type: 'text', required: true } ]) },
+  'civil-matrimonio': { tag: 'Registro Civil', title: 'Certificado de Matrimonio', price: 35, info: 'Certificado que acredita la celebración del matrimonio.', fields: withAuthorization([ { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { id: 'conyuge1', label: 'Cónyuge 1', type: 'text', required: true }, { id: 'conyuge2', label: 'Cónyuge 2', type: 'text', required: true }, { id: 'fecha_mat', label: 'Fecha matrimonio', type: 'date', required: true } ]) },
+  'civil-defuncion': { tag: 'Registro Civil', title: 'Certificado de Defunción', price: 35, info: 'Documento acreditativo del fallecimiento.', fields: withAuthorization([ { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { id: 'fallecido', label: 'Nombre fallecido', type: 'text', required: true, full: true }, { id: 'fecha_def', label: 'Fecha fallecimiento', type: 'date', required: true } ]) },
+  'civil-fe-vida': { tag: 'Registro Civil', title: 'Fe de Vida y Estado', price: 60, info: 'Documento que acredita la vida y estado civil.', fields: withAuthorization([ { id: 'sol_nombre', label: 'Nombre del solicitante original', type: 'text', required: true, full: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { id: 'estado_civil', label: 'Estado civil', type: 'select', options: ['Soltero', 'Casado', 'Viudo', 'Divorciado'], required: true } ]) },
+  'civil-cambio-nombre': { tag: 'Registro Civil', title: 'Cambio de Nombre', price: 385, info: 'Expediente de cambio o modificación de nombre.', fields: withAuthorization([ { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { id: 'nombre_actual', label: 'Nombre actual', type: 'text', required: true, full: true }, { id: 'nombre_nuevo', label: 'Nombre nuevo', type: 'text', required: true, full: true } ]) },
+  'civil-ultimas-voluntades': { tag: 'Registro Civil', title: 'Certificado de Actos de Última Voluntad', price: 28, info: 'Certificado sobre la existencia de testamento o actos de última voluntad.', fields: [ { id: 'sol_nombre', label: 'Nombre completo del solicitante original', type: 'text', required: true, full: true }, { id: 'sol_dni', label: 'DNI / NIE del solicitante original', type: 'text', required: true }, { id: 'fecha_defuncion_interesado', label: 'Fecha de defunción del interesado', type: 'date', required: false }, ...AUTH_FIELDS ] },
+  'merc-denominacion': { tag: 'Registro Mercantil', title: 'Denominación Social', price: 60, info: 'Reserva de denominación social para constitución.', fields: withAuthorization([ { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { id: 'opcion1', label: 'Opción 1', type: 'text', required: true, full: true }, { id: 'opcion2', label: 'Opción 2', type: 'text', required: false, full: true } ]) },
+  'merc-deposito': { tag: 'Registro Mercantil', title: 'Depósito de Cuentas Anuales', price: 150, info: 'Presentación de las cuentas anuales obligatorias.', fields: withAuthorization([ { id: 'sociedad', label: 'Sociedad', type: 'text', required: true, full: true }, { id: 'cif', label: 'CIF', type: 'text', required: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { id: 'ejercicio', label: 'Ejercicio', type: 'text', placeholder:'Ej. 2025', required: true } ]) },
+  'merc-certificacion': { tag: 'Registro Mercantil', title: 'Certificación Registral Mercantil', price: 80, info: 'Certificado oficial sobre situación societaria.', fields: withAuthorization([ { id: 'sociedad', label: 'Sociedad', type: 'text', required: true, full: true }, { id: 'cif', label: 'CIF', type: 'text', required: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true } ]) },
+  'merc-inscripcion': { tag: 'Registro Mercantil', title: 'Inscripción de Escritura Mercantil', price: 205, info: 'Presentación de constitución, modificación estatutaria, etc.', fields: withAuthorization([ { id: 'sociedad', label: 'Sociedad', type: 'text', required: true, full: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true }, { id: 'tipo_escritura', label: 'Tipo', type: 'text', required: true } ]) },
+  'merc-nota': { tag: 'Registro Mercantil', title: 'Nota Simple Mercantil', price: 25, info: 'Información registral básica de una sociedad.', fields: withAuthorization([ { id: 'sociedad', label: 'Sociedad', type: 'text', required: true, full: true }, { id: 'sol_email', label: 'Correo electrónico', type: 'email', required: true } ]) },
+  'trafico-informe-matricula': { tag: 'Tráfico', title: 'Informe de Tráfico de un Vehículo por Matrícula', price: 25, info: 'Informe del vehículo solicitado a partir de su matrícula.', fields: [ { id: 'matricula', label: 'Matrícula del vehículo', type: 'text', required: true }, { id: 'titular_nombre', label: 'Nombre completo del titular del vehículo', type: 'text', required: true, full: true }, { id: 'titular_dni', label: 'DNI / NIE del titular del vehículo', type: 'text', required: true }, ...AUTH_FIELDS ] }
+}
 };
 
 function toggleMenu() { document.querySelector('.nav-links').classList.toggle('active'); }
@@ -501,6 +564,8 @@ function renderFormStep(svc) {
       html += `</select>`;
     } else if (f.type === 'textarea') {
       html += `<textarea id="${escapeHTML(f.id)}" placeholder="${placeholder}" rows="3" ${f.required ? 'required' : ''}></textarea>`;
+    } else if (f.type === 'file') {
+      html += `<input type="file" id="${escapeHTML(f.id)}" accept="${escapeHTML(f.accept || '.pdf,.jpg,.jpeg,.png')}" ${f.required ? 'required' : ''}>`;
     } else {
       html += `<input type="${escapeHTML(f.type)}" id="${escapeHTML(f.id)}" placeholder="${placeholder}" ${f.required ? 'required' : ''}>`;
     }
@@ -519,17 +584,33 @@ function renderFormStep(svc) {
   document.getElementById('modalBody').innerHTML = html;
 }
 
-function collectFormData(svc) {
-  const formData = {};
-  let emailValue = '';
-  svc.fields.forEach(f => {
-    if (!f.id) return;
-    const el = document.getElementById(f.id);
-    if (!el) return;
-    formData[f.id] = el.value.trim();
-    if (f.type === 'email') emailValue = el.value.trim();
+async function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ''));
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
   });
-  return { formData, emailValue };
+}
+
+async function collectFormData(svc) {
+  const formData = {};
+  const attachments = {};
+  let emailValue = '';
+  for (const f of svc.fields) {
+    if (!f.id) continue;
+    const el = document.getElementById(f.id);
+    if (!el) continue;
+    if (f.type === 'file') {
+      const file = el.files && el.files[0];
+      formData[f.id] = file ? file.name : '';
+      if (file) attachments[f.id] = { name: file.name, type: file.type || 'application/octet-stream', content: await fileToBase64(file) };
+    } else {
+      formData[f.id] = el.value.trim();
+      if (f.type === 'email') emailValue = el.value.trim();
+    }
+  }
+  return { formData, emailValue, attachments };
 }
 
 function validateServiceForm(svc, formData) {
@@ -540,14 +621,15 @@ function validateServiceForm(svc, formData) {
   return '';
 }
 
-function goToPayment() {
+async function goToPayment() {
   const svc = SERVICES[currentService];
-  const { formData, emailValue } = collectFormData(svc);
+  const { formData, emailValue, attachments } = await collectFormData(svc);
   const validationError = validateServiceForm(svc, formData);
   if (validationError) { alert(validationError); return; }
 
   window._formData = formData;
   window._formEmail = emailValue;
+  window._attachments = attachments;
 
   document.getElementById('modalBody').innerHTML = `
     <div class="payment-header">
@@ -601,6 +683,7 @@ async function processPayment() {
         serviceKey: currentService,
         formData: window._formData || {},
         clientEmail: window._formEmail || '',
+        attachments: window._attachments || {},
         reference
       })
     });
@@ -648,6 +731,7 @@ async function sendOrderEmail(paymentIntentId, reference) {
       serviceKey: currentService,
       formData: window._formData || {},
       clientEmail: window._formEmail || '',
+      attachments: window._attachments || {},
       reference
     })
   });
@@ -717,6 +801,267 @@ function showEmailWarning(ref, paymentIntentId) {
       <p style="font-size:12px;color:var(--text-light);margin-bottom:28px;">ID Stripe: ${escapeHTML(paymentIntentId)}</p>
       <button class="btn-primary" style="border:none;cursor:pointer;" onclick="closeModal()">Cerrar</button>
     </div>`;
+}
+
+const CHAT_CONTACT_EMAIL = 'contactos@tramitium.es';
+let chatQuestionCount = 0;
+let chatAwaitingResolution = false;
+let chatStarted = false;
+
+const CHAT_SUGGESTIONS = [
+  '¿Qué servicios ofrecéis?',
+  '¿Cuánto cuesta una nota simple?',
+  '¿Cuánto tardáis?',
+  '¿Cómo se paga?',
+  'Necesito contactar'
+];
+
+const CHAT_KNOWLEDGE = [
+  {
+    title: 'Precios y pago',
+    keywords: ['precio', 'cuesta', 'coste', 'tarifa', 'pago', 'pagar', 'stripe'],
+    answer: 'Los precios aparecen junto a cada trámite. Como referencia, la Nota Simple Informativa parte de 35 €, la Nota de Localización de Propiedades de 25 €, la Nota Simple Mercantil de 25 € y el Informe de Tráfico por matrícula de 25 €. El pago se realiza de forma segura con Stripe.'
+  },
+  {
+    title: 'Nota Simple Informativa',
+    keywords: ['nota simple', 'propiedad', 'finca', 'inmueble', 'titular', 'cargas', 'hipoteca', 'embargo', 'usufructo', 'servidumbre'],
+    answer: 'La Nota Simple Informativa sirve para conocer la situación jurídica básica de una vivienda, local, terreno, garaje u otro inmueble inscrito. Puede mostrar identificación de la finca, titularidad, porcentaje de propiedad y posibles cargas como hipotecas, embargos, usufructos o servidumbres. Tiene valor informativo, no probatorio como una certificación registral.'
+  },
+  {
+    title: 'Inscripción de Escritura',
+    keywords: ['inscripcion escritura', 'inscripción escritura', 'escritura propiedad', 'compraventa', 'herencia', 'donacion', 'donación', 'obra nueva', 'division horizontal', 'división horizontal'],
+    answer: 'La Inscripción de Escritura consiste en presentar una escritura pública ante el Registro de la Propiedad para que un acto quede inscrito oficialmente, como una compraventa, herencia, donación, adjudicación, obra nueva, división horizontal o hipoteca. Es delicado porque pueden existir impuestos, justificantes o defectos que obliguen a subsanar.'
+  },
+  {
+    title: 'Certificación Registral',
+    keywords: ['certificacion registral', 'certificación registral', 'certificado registral', 'dominio', 'cargas', 'literal', 'valor probatorio', 'probatorio'],
+    answer: 'La Certificación Registral es un documento oficial del Registro de la Propiedad que acredita de forma fehaciente el contenido de los asientos registrales. A diferencia de la nota simple, sí tiene valor probatorio y puede utilizarse en procedimientos judiciales, herencias, bancos, reclamaciones o compraventas complejas.'
+  },
+  {
+    title: 'Cancelación de Carga',
+    keywords: ['cancelacion carga', 'cancelación carga', 'cancelar carga', 'hipoteca pagada', 'deuda cero', 'embargo levantado', 'condicion resolutoria', 'condición resolutoria'],
+    answer: 'La Cancelación de Carga sirve para eliminar del Registro una carga que ya no debería aparecer, como una hipoteca pagada, un embargo levantado o una condición extinguida. En una hipoteca suele requerirse certificado de deuda cero, escritura de cancelación, liquidación fiscal si procede y presentación en el Registro.'
+  },
+  {
+    title: 'Nota de Localización de Propiedades',
+    keywords: ['nota localizacion', 'nota de localizacion', 'localización propiedades', 'localizacion propiedades', 'bienes a nombre', 'propiedades de una persona', 'investigacion patrimonial', 'investigación patrimonial'],
+    answer: 'La Nota de Localización de Propiedades ayuda a saber en qué Registros de la Propiedad aparecen bienes o derechos inscritos a nombre de una persona o sociedad. No ofrece el detalle completo de cada inmueble, pero orienta sobre dónde existen inscripciones.'
+  },
+  {
+    title: 'Registro Civil',
+    keywords: ['registro civil', 'certificado nacimiento', 'certificado matrimonio', 'certificado defuncion', 'certificado defunción', 'nacimiento', 'matrimonio', 'defuncion', 'defunción'],
+    answer: 'Tramitium puede orientar sobre certificados del Registro Civil, como nacimiento, matrimonio y defunción. Estos documentos suelen utilizarse en DNI, pasaporte, nacionalidad, herencias, pensiones, seguros, trámites notariales o gestiones administrativas.'
+  },
+  {
+    title: 'Certificado de Nacimiento',
+    keywords: ['certificado nacimiento', 'nacimiento', 'literal nacimiento', 'extracto nacimiento', 'plurilingue nacimiento', 'plurilingüe nacimiento'],
+    answer: 'El Certificado de Nacimiento acredita oficialmente el nacimiento de una persona e incluye datos como fecha, hora, lugar, identidad, sexo y filiación. Puede necesitarse para DNI, pasaporte, matrimonio, nacionalidad, herencias, escolarización u otros trámites.'
+  },
+  {
+    title: 'Certificado de Matrimonio',
+    keywords: ['certificado matrimonio', 'matrimonio', 'conyuges', 'cónyuges', 'divorcio', 'nacionalidad matrimonio'],
+    answer: 'El Certificado de Matrimonio acredita que un matrimonio está inscrito en el Registro Civil. Puede ser necesario para herencias, extranjería, nacionalidad, divorcios, pensiones o cambios administrativos. Conviene aportar correctamente los datos de los cónyuges, fecha y lugar de celebración.'
+  },
+  {
+    title: 'Certificado de Defunción',
+    keywords: ['certificado defuncion', 'certificado defunción', 'defuncion', 'defunción', 'fallecimiento', 'seguros vida', 'herencia fallecido'],
+    answer: 'El Certificado de Defunción acredita oficialmente el fallecimiento de una persona. Suele ser necesario para herencias, seguros de vida, pensiones, cancelación de cuentas bancarias, trámites notariales y cambios de titularidad.'
+  },
+  {
+    title: 'Fe de Vida y Estado',
+    keywords: ['fe de vida', 'estado civil', 'persona viva', 'pension', 'pensión'],
+    answer: 'La Fe de Vida y Estado acredita que una persona está viva y cuál es su estado civil en la fecha de expedición. Normalmente requiere comparecencia personal en el Registro Civil con DNI, NIE o pasaporte, aunque algunos casos pueden admitir representación o documentación adicional.'
+  },
+  {
+    title: 'Cambio de Nombre',
+    keywords: ['cambio de nombre', 'cambiar nombre', 'apellidos', 'inversion apellidos', 'inversión apellidos', 'rectificar nombre'],
+    answer: 'El Cambio de Nombre o apellidos permite modificar oficialmente los datos cuando se cumplen requisitos legales, por ejemplo por uso habitual, adecuación lingüística, errores o inversión de apellidos. No es automático: el Registro Civil revisa la causa y la documentación aportada.'
+  },
+  {
+    title: 'Denominación Social',
+    keywords: ['denominacion social', 'denominación social', 'nombre sociedad', 'certificacion negativa', 'certificación negativa', 'registro mercantil central', 'constituir sociedad'],
+    answer: 'La Denominación Social es el nombre oficial de una sociedad. Antes de constituir una empresa se solicita una certificación negativa para acreditar que no existe otra sociedad con el mismo nombre o uno confundible. El Registro puede denegar nombres ya existentes, similares o no permitidos.'
+  },
+  {
+    title: 'Depósito de Cuentas Anuales',
+    keywords: ['deposito cuentas', 'depósito cuentas', 'cuentas anuales', 'balance', 'memoria', 'auditoria', 'auditoría', 'registro mercantil cuentas'],
+    answer: 'El Depósito de Cuentas Anuales es la presentación obligatoria de las cuentas de una sociedad ante el Registro Mercantil. Puede incluir balance, cuenta de pérdidas y ganancias, memoria, certificación de aprobación y, en algunos casos, informe de auditoría. Los errores en firmas, fechas o modelos pueden provocar defectos.'
+  },
+  {
+    title: 'Certificación Registral Mercantil',
+    keywords: ['certificacion mercantil', 'certificación mercantil', 'certificacion registral mercantil', 'administradores', 'poderes', 'vigencia sociedad', 'estatutos'],
+    answer: 'La Certificación Registral Mercantil acredita oficialmente contenido inscrito sobre una sociedad o empresario: administradores, vigencia, objeto social, capital, poderes, estatutos o actos societarios. Tiene más valor que una nota informativa porque es documento oficial expedido por el Registro.'
+  },
+  {
+    title: 'Inscripción de Escritura Mercantil',
+    keywords: ['inscripcion escritura mercantil', 'inscripción escritura mercantil', 'constitucion empresa', 'constitución empresa', 'ampliacion capital', 'ampliación capital', 'cambio domicilio', 'disolucion', 'disolución', 'liquidacion sociedad'],
+    answer: 'La Inscripción de Escritura Mercantil consiste en presentar en el Registro Mercantil una escritura sobre una sociedad: constitución, nombramiento o cese de administradores, ampliación de capital, cambio de domicilio, modificación de estatutos, disolución, liquidación o apoderamientos.'
+  },
+  {
+    title: 'Nota Simple Mercantil',
+    keywords: ['nota simple mercantil', 'sociedad', 'empresa', 'borme', 'capital social', 'apoderados', 'administrador empresa'],
+    answer: 'La Nota Simple Mercantil ofrece información básica de una empresa inscrita: datos generales, capital social, administradores, apoderados, actos publicados en el BORME, cuentas depositadas o libros legalizados. Ayuda a comprobar la existencia de una sociedad y quién la administra.'
+  },
+  {
+    title: 'Informe DGT por Matrícula',
+    keywords: ['trafico', 'tráfico', 'dgt', 'vehiculo', 'vehículo', 'matricula', 'matrícula', 'coche', 'moto', 'reserva de dominio', 'itv', 'precinto'],
+    answer: 'El Informe DGT por Matrícula permite conocer información pública disponible sobre un vehículo matriculado en España. Es útil antes de comprar un vehículo de segunda mano porque puede mostrar cargas, incidencias, limitaciones, historial administrativo, titularidad o datos técnicos según el informe.'
+  },
+  {
+    title: 'Contrato Privado',
+    keywords: ['contrato privado', 'contrato compraventa', 'prestamo entre particulares', 'préstamo entre particulares', 'alquiler', 'reconocimiento de deuda', 'cesion', 'cesión'],
+    answer: 'La Elaboración de Contrato Privado consiste en redactar un documento entre particulares o empresas para fijar condiciones de una operación: partes, objeto, precio, pago, plazos, responsabilidades, garantías, documentación y consecuencias por incumplimiento. Usar modelos genéricos puede dejar cláusulas importantes fuera.'
+  },
+  {
+    title: 'Plazos',
+    keywords: ['plazo', 'tardais', 'tardáis', 'tiempo', 'cuando', '24h', '24 horas', 'urgente'],
+    answer: 'El equipo responde normalmente en menos de 24 horas. Los plazos de entrega pueden variar según el registro y el tipo de trámite, pero la gestión se inicia al recibir el formulario y el pago.'
+  },
+  {
+    title: 'Proceso',
+    keywords: ['como funciona', 'cómo funciona', 'proceso', 'pasos', 'contratar', 'solicitar', 'tramite', 'trámite'],
+    answer: 'El proceso es sencillo: elija el trámite, complete el formulario, realice el pago seguro y el equipo de Tramitium gestionará la solicitud. Muchos trámites pueden hacerse por cuenta propia, pero una gestión especializada ayuda a evitar errores, rechazos, datos incompletos y documentos incorrectos.'
+  },
+  {
+    title: 'Contacto',
+    keywords: ['contacto', 'email', 'correo', 'telefono', 'teléfono', 'hablar', 'ayuda', 'duda'],
+    answer: `Puede escribir a ${CHAT_CONTACT_EMAIL}. El equipo de Tramitium le dará respuesta en menos de 24 horas. También puede usar el formulario de contacto de esta página.`
+  },
+  {
+    title: 'Autorización',
+    keywords: ['autorizacion', 'autorización', 'representante', 'tercero', 'poder'],
+    answer: 'Algunos trámites requieren poder o autorización firmada, especialmente cuando actúa un representante o tercero. Si el formulario la solicita, debe adjuntarla en PDF, JPG o PNG.'
+  }
+];
+
+function toggleChat(forceOpen) {
+  const widget = document.getElementById('chatWidget');
+  const launcher = widget.querySelector('.chat-launcher');
+  const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !widget.classList.contains('open');
+  widget.classList.toggle('open', shouldOpen);
+  launcher.setAttribute('aria-expanded', String(shouldOpen));
+  if (shouldOpen) {
+    startChat();
+    setTimeout(() => document.getElementById('chatInput').focus(), 50);
+  }
+}
+
+function startChat() {
+  if (chatStarted) return;
+  chatStarted = true;
+  addChatMessage('bot', 'Hola, soy el asistente de Tramitium. Puedo ayudarle con servicios, precios, plazos, pagos y cómo iniciar un trámite.');
+  renderChatSuggestions();
+}
+
+function renderChatSuggestions() {
+  const container = document.getElementById('chatQuickActions');
+  container.innerHTML = CHAT_SUGGESTIONS.map(item => `<button class="chat-chip" type="button" onclick="askChatSuggestion('${escapeHTML(item)}')">${escapeHTML(item)}</button>`).join('');
+}
+
+function askChatSuggestion(text) {
+  document.getElementById('chatInput').value = text;
+  handleChatQuestion(text);
+}
+
+function submitChatMessage(event) {
+  event.preventDefault();
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  handleChatQuestion(text);
+}
+
+function handleChatQuestion(text) {
+  addChatMessage('user', text);
+
+  if (chatAwaitingResolution) {
+    handleResolutionAnswer(text);
+    return;
+  }
+
+  chatQuestionCount += 1;
+  const answer = getChatAnswer(text);
+  addChatMessage('bot', answer);
+
+  if (chatQuestionCount >= 3) {
+    chatAwaitingResolution = true;
+    setTimeout(() => addChatMessage('bot', '¿He resuelto su duda? Puede responder sí o no.'), 250);
+  }
+}
+
+function handleResolutionAnswer(text) {
+  const normalized = normalizeChatText(text);
+  chatAwaitingResolution = false;
+
+  if (/\b(no|aun no|todavia no|todavía no|negativo|no gracias)\b/.test(normalized)) {
+    addChatMessage('bot', `Lamento no haber resuelto la duda. Para una respuesta personalizada, le recomendamos escribir a ${CHAT_CONTACT_EMAIL}. Nuestro equipo le responderá en menos de 24 horas.`);
+    return;
+  }
+
+  if (/\b(si|sí|claro|perfecto|gracias|resuelto|vale)\b/.test(normalized)) {
+    addChatMessage('bot', 'Perfecto. Me alegra haberle ayudado. Si necesita iniciar un trámite, puede hacerlo desde la sección de servicios.');
+    chatQuestionCount = 0;
+    return;
+  }
+
+  addChatMessage('bot', `Si aún necesita ayuda personalizada, escríbanos a ${CHAT_CONTACT_EMAIL} y le responderemos en menos de 24 horas.`);
+}
+
+function getChatAnswer(question) {
+  const normalized = normalizeChatText(question);
+  const matched = findBestChatKnowledge(normalized);
+  if (matched) return matched.answer;
+
+  const serviceMatch = findServiceByQuestion(normalized);
+  if (serviceMatch) {
+    return `${serviceMatch.title}: ${serviceMatch.info} Precio indicado en la web: ${serviceMatch.price} €.`;
+  }
+
+  return `Puedo orientarle sobre servicios, precios, plazos, pagos y contacto. Para casos muy concretos, escriba a ${CHAT_CONTACT_EMAIL} y le responderemos en menos de 24 horas.`;
+}
+
+function findBestChatKnowledge(normalizedQuestion) {
+  let bestMatch = null;
+  let bestScore = 0;
+
+  CHAT_KNOWLEDGE.forEach(item => {
+    const title = normalizeChatText(item.title || '');
+    let score = title && normalizedQuestion.includes(title) ? 8 : 0;
+
+    item.keywords.forEach(keyword => {
+      const normalizedKeyword = normalizeChatText(keyword);
+      if (!normalizedKeyword || !normalizedQuestion.includes(normalizedKeyword)) return;
+      score += normalizedKeyword.length > 12 ? 4 : 2;
+    });
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = item;
+    }
+  });
+
+  return bestScore > 0 ? bestMatch : null;
+}
+
+function findServiceByQuestion(normalizedQuestion) {
+  return Object.values(SERVICES).find(service => {
+    const title = normalizeChatText(service.title);
+    return title.split(' ').filter(word => word.length > 3).some(word => normalizedQuestion.includes(word));
+  });
+}
+
+function normalizeChatText(value) {
+  return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function addChatMessage(type, text) {
+  const messages = document.getElementById('chatMessages');
+  const message = document.createElement('div');
+  message.className = `chat-message ${type}`;
+  message.textContent = text;
+  messages.appendChild(message);
+  messages.scrollTop = messages.scrollHeight;
 }
 
 </script>
