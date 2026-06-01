@@ -224,10 +224,12 @@
   .chat-message { max-width: 88%; padding: 12px 14px; font-size: 14px; line-height: 1.55; box-shadow: 0 6px 18px rgba(15,30,60,0.07); }
   .chat-message.bot { align-self: flex-start; background: var(--white); border-left: 3px solid var(--gold); color: var(--text-dark); }
   .chat-message.user { align-self: flex-end; background: var(--navy); color: var(--white); }
-  .chat-quick-actions { padding: 0 18px 14px; display: flex; gap: 8px; flex-wrap: wrap; background: #fffdf8; }
+  .chat-quick-actions { padding: 0 18px 16px; display: flex; gap: 8px; flex-wrap: wrap; background: #fffdf8; max-height: 190px; overflow-y: auto; }
   .chat-chip { border: 1px solid rgba(201,168,76,0.45); background: var(--white); color: var(--navy); padding: 8px 10px; font-size: 12px; cursor: pointer; transition: all 0.2s; }
   .chat-chip:hover { background: var(--gold-pale); border-color: var(--gold); }
-  .chat-form { display: flex; gap: 8px; padding: 14px; border-top: 1px solid var(--border); background: var(--white); }
+  .chat-chip.primary { background: var(--gold); border-color: var(--gold); color: var(--navy); font-weight: 500; }
+  .chat-chip.muted { color: var(--text-mid); }
+  .chat-form { display: none; gap: 8px; padding: 14px; border-top: 1px solid var(--border); background: var(--white); }
   .chat-input { flex: 1; min-width: 0; border: 1px solid var(--border); padding: 12px 13px; font-family: 'Jost', sans-serif; font-size: 14px; color: var(--text-dark); outline: none; }
   .chat-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); }
   .chat-send { border: none; background: var(--gold); color: var(--navy); width: 46px; flex-shrink: 0; cursor: pointer; font-size: 18px; transition: all 0.2s; }
@@ -439,16 +441,12 @@
     <div class="chat-header">
       <div>
         <h2 class="chat-header-title" id="chatTitle">Asistente Tramitium</h2>
-        <p class="chat-header-subtitle">Respuestas rápidas sobre trámites, precios y plazos.</p>
+        <p class="chat-header-subtitle">Guía rápida sobre trámites, precios y documentación.</p>
       </div>
       <button class="chat-close" id="chatCloseBtn" type="button" aria-label="Cerrar chat">✕</button>
     </div>
     <div class="chat-messages" id="chatMessages"></div>
-    <div class="chat-quick-actions" id="chatQuickActions" aria-label="Preguntas frecuentes"></div>
-    <form class="chat-form" onsubmit="submitChatMessage(event)">
-      <input class="chat-input" id="chatInput" type="text" placeholder="Escriba su pregunta..." autocomplete="off" aria-label="Pregunta para el asistente">
-      <button class="chat-send" type="submit" aria-label="Enviar pregunta">→</button>
-    </form>
+    <div class="chat-quick-actions" id="chatQuickActions" aria-label="Opciones del asistente"></div>
   </section>
   <button class="chat-launcher" id="chatLauncherBtn" type="button" aria-controls="chatWidget" aria-expanded="false">
     <span class="chat-launcher-icon" aria-hidden="true"></span>
@@ -1090,6 +1088,368 @@ function addChatMessage(type, text) {
   message.textContent = text;
   messages.appendChild(message);
   messages.scrollTop = messages.scrollHeight;
+}
+
+const GUIDED_CHAT = {
+  propiedad: {
+    title: 'Registro de la Propiedad',
+    intro: 'Seleccione el trámite sobre el que necesita información.',
+    items: {
+      notaSimple: {
+        title: 'Nota Simple Informativa',
+        serviceKey: 'prop-nota-simple',
+        answers: {
+          paraQue: 'Sirve para conocer la situación jurídica básica de una vivienda, local, terreno, garaje u otro inmueble inscrito.',
+          contiene: 'Puede incluir identificación de la finca, titularidad, porcentaje de propiedad, hipotecas, embargos, usufructos, servidumbres u otras limitaciones.',
+          cuando: 'Suele pedirse antes de comprar una vivienda, aceptar una herencia, preparar una venta, comprobar una hipoteca pendiente o verificar la titularidad.',
+          hacerlo: 'Puede solicitarse en la Sede Electrónica de Registradores o presencialmente, pero una dirección incompleta o un dato incorrecto puede causar retrasos o una nota que no corresponde al inmueble buscado.',
+          tramitium: 'Tramitium ayuda a revisar los datos, evitar errores y solicitar el documento adecuado según la necesidad concreta.'
+        }
+      },
+      inscripcion: {
+        title: 'Inscripción de Escritura',
+        serviceKey: 'prop-inscripcion',
+        answers: {
+          paraQue: 'Sirve para que una escritura pública quede inscrita oficialmente en el Registro de la Propiedad.',
+          contiene: 'Puede referirse a compraventas, herencias, donaciones, adjudicaciones, obra nueva, división horizontal, hipotecas u otros actos sobre inmuebles.',
+          cuando: 'Se utiliza cuando se quiere proteger frente a terceros un cambio de titularidad o un derecho adquirido.',
+          hacerlo: 'Primero se firma la escritura ante notario, normalmente se liquidan impuestos y después se presenta en el Registro competente.',
+          tramitium: 'Es un trámite sensible: si falta documentación, impuestos o justificantes, el Registro puede suspender la inscripción y pedir subsanaciones.'
+        }
+      },
+      certificacion: {
+        title: 'Certificación Registral',
+        serviceKey: 'prop-certificacion',
+        answers: {
+          paraQue: 'Sirve para acreditar oficialmente el contenido de los asientos registrales.',
+          contiene: 'Puede certificar dominio, cargas, titularidad, datos literales o situaciones concretas de una finca.',
+          cuando: 'Se usa en procedimientos judiciales, herencias, operaciones bancarias, reclamaciones o compraventas complejas.',
+          hacerlo: 'Puede solicitarse en el Registro correspondiente o por la Sede Electrónica de Registradores indicando la finca y el tipo de certificación.',
+          tramitium: 'La dificultad está en elegir correctamente el tipo de certificación: dominio, cargas, literal, negativa, continuada u otra modalidad.'
+        }
+      },
+      cancelacion: {
+        title: 'Cancelación de Carga',
+        serviceKey: 'prop-cancelacion',
+        answers: {
+          paraQue: 'Sirve para eliminar del Registro una carga que ya no debería aparecer, como una hipoteca pagada o un embargo levantado.',
+          contiene: 'Según el caso puede requerir certificado de deuda cero, escritura de cancelación, mandamiento judicial o documentación administrativa.',
+          cuando: 'Es habitual cuando la hipoteca ya está pagada pero sigue apareciendo en el Registro de la Propiedad.',
+          hacerlo: 'Normalmente hay que obtener documentación, acudir a notaría si procede, liquidar impuestos cuando corresponda y presentar la escritura o mandamiento en el Registro.',
+          tramitium: 'Tramitium ayuda a identificar qué tipo de carga existe y qué documentación concreta se necesita para cancelarla.'
+        }
+      },
+      localizacion: {
+        title: 'Nota de Localización',
+        serviceKey: 'prop-localizacion',
+        answers: {
+          paraQue: 'Sirve para localizar en qué Registros aparecen bienes o derechos inscritos a nombre de una persona o sociedad.',
+          contiene: 'No ofrece el detalle completo de cada inmueble, pero indica dónde existen inscripciones vinculadas al titular consultado.',
+          cuando: 'Puede ser útil en herencias, investigaciones patrimoniales, reclamaciones de deuda, divorcios o procesos judiciales.',
+          hacerlo: 'Puede solicitarse online aportando datos identificativos de la persona física o jurídica.',
+          tramitium: 'La clave es aportar datos exactos como DNI, NIE o CIF para evitar errores con personas o sociedades de nombre parecido.'
+        }
+      }
+    }
+  },
+  civil: {
+    title: 'Registro Civil',
+    intro: 'Seleccione el certificado o trámite civil.',
+    items: {
+      nacimiento: {
+        title: 'Certificado de Nacimiento',
+        serviceKey: 'civil-nacimiento',
+        answers: {
+          paraQue: 'Acredita oficialmente el nacimiento de una persona.',
+          contiene: 'Incluye datos como fecha, hora y lugar de nacimiento, identidad, sexo y filiación.',
+          cuando: 'Puede necesitarse para DNI, pasaporte, matrimonio, nacionalidad, herencias, escolarización o trámites administrativos.',
+          hacerlo: 'Se puede pedir en la Sede Electrónica del Ministerio de Justicia, con o sin Cl@ve según el caso.',
+          tramitium: 'Tramitium ayuda a escoger el tipo correcto: literal, extracto, plurilingüe o negativo, y a localizar el Registro Civil adecuado.'
+        }
+      },
+      matrimonio: {
+        title: 'Certificado de Matrimonio',
+        serviceKey: 'civil-matrimonio',
+        answers: {
+          paraQue: 'Acredita oficialmente que un matrimonio está inscrito en el Registro Civil.',
+          contiene: 'Incluye datos de los cónyuges, fecha, lugar de celebración e inscripción registral.',
+          cuando: 'Se utiliza en herencias, extranjería, nacionalidad, divorcios, pensiones o gestiones administrativas.',
+          hacerlo: 'Puede solicitarse online indicando los datos de los cónyuges, fecha y lugar de celebración.',
+          tramitium: 'Puede complicarse si el matrimonio es antiguo, se celebró en otro municipio, en el extranjero o faltan datos de inscripción.'
+        }
+      },
+      defuncion: {
+        title: 'Certificado de Defunción',
+        serviceKey: 'civil-defuncion',
+        answers: {
+          paraQue: 'Acredita oficialmente el fallecimiento de una persona.',
+          contiene: 'Recoge los datos registrales del fallecimiento y la persona fallecida.',
+          cuando: 'Es necesario para herencias, seguros de vida, pensiones, cancelación de cuentas bancarias, trámites notariales o cambios de titularidad.',
+          hacerlo: 'Puede solicitarse online con los datos de la persona fallecida, fecha y lugar de defunción.',
+          tramitium: 'Ayuda cuando no se conoce el Registro Civil exacto o se necesita un certificado específico para trámites nacionales o internacionales.'
+        }
+      },
+      feVida: {
+        title: 'Fe de Vida y Estado',
+        serviceKey: 'civil-fe-vida',
+        answers: {
+          paraQue: 'Acredita que una persona está viva y cuál es su estado civil en la fecha de expedición.',
+          contiene: 'Confirma vida y estado civil del interesado.',
+          cuando: 'Se usa para pensiones, trámites en el extranjero, matrimonios, ayudas públicas o expedientes administrativos.',
+          hacerlo: 'Normalmente requiere comparecencia personal en el Registro Civil con DNI, NIE o pasaporte.',
+          tramitium: 'Tramitium orienta sobre cita previa, documentación y posibles alternativas si la persona no puede desplazarse.'
+        }
+      },
+      cambioNombre: {
+        title: 'Cambio de Nombre',
+        serviceKey: 'civil-cambio-nombre',
+        answers: {
+          paraQue: 'Permite modificar oficialmente nombre propio o apellidos cuando se cumplen requisitos legales.',
+          contiene: 'La solicitud debe justificar el cambio con documentación y pruebas suficientes.',
+          cuando: 'Puede pedirse por uso habitual, adecuación lingüística, errores, inversión de apellidos o causas legalmente previstas.',
+          hacerlo: 'Se presenta ante el Registro Civil con DNI, certificado de nacimiento y documentación justificativa.',
+          tramitium: 'No es automático: Tramitium ayuda a preparar la solicitud y justificar correctamente el motivo.'
+        }
+      }
+    }
+  },
+  mercantil: {
+    title: 'Registro Mercantil',
+    intro: 'Seleccione el trámite mercantil.',
+    items: {
+      denominacion: {
+        title: 'Denominación Social',
+        serviceKey: 'merc-denominacion',
+        answers: {
+          paraQue: 'Sirve para comprobar y reservar el nombre oficial de una sociedad antes de constituirla.',
+          contiene: 'La certificación negativa acredita que no existe otra sociedad con el mismo nombre o uno confundible.',
+          cuando: 'Es imprescindible para constituir sociedades como una Sociedad Limitada o Sociedad Anónima.',
+          hacerlo: 'Se solicita ante el Registro Mercantil Central proponiendo varios nombres por orden de preferencia.',
+          tramitium: 'Tramitium ayuda a elegir denominaciones viables y reducir rechazos por similitud o términos no permitidos.'
+        }
+      },
+      cuentas: {
+        title: 'Depósito de Cuentas Anuales',
+        serviceKey: 'merc-cuentas',
+        answers: {
+          paraQue: 'Sirve para cumplir la obligación legal de presentar las cuentas de una sociedad ante el Registro Mercantil.',
+          contiene: 'Puede incluir balance, cuenta de pérdidas y ganancias, memoria, certificación de aprobación e informe de auditoría cuando proceda.',
+          cuando: 'Debe realizarse tras formular y aprobar las cuentas sociales.',
+          hacerlo: 'Puede hacerse en formato digital mediante los sistemas habilitados por Registradores.',
+          tramitium: 'Tramitium ayuda a evitar defectos por errores en fechas, firmas, modelos contables o certificaciones.'
+        }
+      },
+      certificacionMercantil: {
+        title: 'Certificación Registral Mercantil',
+        serviceKey: 'merc-certificacion',
+        answers: {
+          paraQue: 'Acredita oficialmente contenido inscrito sobre una sociedad o empresario.',
+          contiene: 'Puede certificar administradores, vigencia, objeto social, capital, poderes, estatutos o actos societarios.',
+          cuando: 'Se usa cuando se necesita un documento oficial con más valor que una nota informativa.',
+          hacerlo: 'Se solicita al Registro Mercantil correspondiente o por la Sede Electrónica de Registradores.',
+          tramitium: 'La dificultad está en escoger correctamente qué se quiere certificar: cargos, poderes, cuentas, vigencia o asientos concretos.'
+        }
+      },
+      escrituraMercantil: {
+        title: 'Inscripción de Escritura Mercantil',
+        serviceKey: 'merc-inscripcion',
+        answers: {
+          paraQue: 'Sirve para inscribir actos societarios y darles publicidad frente a terceros.',
+          contiene: 'Puede tratar constitución, administradores, ampliación de capital, cambio de domicilio, estatutos, disolución, liquidación o apoderamientos.',
+          cuando: 'Se usa después de firmar ante notario una escritura relacionada con la sociedad.',
+          hacerlo: 'Puede requerir liquidar impuestos o presentar modelos fiscales antes de llevarla al Registro Mercantil.',
+          tramitium: 'Tramitium ayuda a revisar acuerdos sociales, certificaciones y requisitos para evitar defectos de inscripción.'
+        }
+      },
+      notaMercantil: {
+        title: 'Nota Simple Mercantil',
+        serviceKey: 'merc-nota',
+        answers: {
+          paraQue: 'Sirve para conocer información básica de una empresa inscrita en el Registro Mercantil.',
+          contiene: 'Puede incluir datos generales, capital social, administradores, apoderados, actos publicados en BORME, cuentas depositadas y libros legalizados.',
+          cuando: 'Es útil para comprobar la existencia de una sociedad, saber quién la administra o revisar datos antes de contratar.',
+          hacerlo: 'Puede solicitarse buscando por denominación social, CIF o datos de inscripción.',
+          tramitium: 'Tramitium ayuda a identificar correctamente la sociedad cuando hay nombres parecidos o grupos con varias empresas.'
+        }
+      }
+    }
+  },
+  dgt: {
+    title: 'DGT y vehículos',
+    intro: 'Seleccione el trámite relacionado con vehículos.',
+    items: {
+      informeDgt: {
+        title: 'Informe DGT por Matrícula',
+        serviceKey: 'trafico-informe-matricula',
+        answers: {
+          paraQue: 'Sirve para conocer información pública disponible sobre un vehículo matriculado en España.',
+          contiene: 'Según el informe puede mostrar cargas, incidencias, limitaciones, historial administrativo, titularidad o datos técnicos.',
+          cuando: 'Es especialmente útil antes de comprar un coche, moto, furgoneta o vehículo de segunda mano.',
+          hacerlo: 'La DGT permite solicitar informes online, desde miDGT, por teléfono o presencialmente. El informe detallado puede requerir tasa.',
+          tramitium: 'Tramitium ayuda a interpretar avisos como reserva de dominio, embargos, precintos, ITV o limitaciones administrativas.'
+        }
+      }
+    }
+  },
+  contratos: {
+    title: 'Contratos privados',
+    intro: 'Información sobre contratos privados.',
+    items: {
+      contratoPrivado: {
+        title: 'Elaboración de Contrato Privado',
+        serviceKey: 'contrato-privado',
+        answers: {
+          paraQue: 'Sirve para dejar por escrito las condiciones de una operación entre particulares o empresas.',
+          contiene: 'Debe identificar partes, objeto, precio, forma de pago, plazos, responsabilidades, garantías, documentación y consecuencias por incumplimiento.',
+          cuando: 'Puede usarse en compraventas de vehículos, préstamos entre particulares, alquileres, reconocimientos de deuda, servicios, reservas o cesiones.',
+          hacerlo: 'Puede hacerse con un modelo de internet, pero muchos modelos son genéricos y no se adaptan al caso concreto.',
+          tramitium: 'Tramitium ayuda a evitar cláusulas mal redactadas, omisiones importantes y conflictos posteriores.'
+        }
+      }
+    }
+  }
+};
+
+const GUIDED_QUESTION_LABELS = {
+  paraQue: '¿Para qué sirve?',
+  contiene: '¿Qué información contiene?',
+  cuando: '¿Cuándo se suele pedir?',
+  hacerlo: '¿Puedo hacerlo yo mismo?',
+  tramitium: '¿Por qué hacerlo con Tramitium?'
+};
+
+let guidedChatStarted = false;
+let guidedCurrentCategory = null;
+let guidedCurrentItem = null;
+
+function toggleChat(forceOpen) {
+  const widget = document.getElementById('chatWidget');
+  const launcher = document.getElementById('chatLauncherBtn') || widget.querySelector('.chat-launcher');
+  const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !widget.classList.contains('open');
+  widget.classList.toggle('open', shouldOpen);
+  if (launcher) launcher.setAttribute('aria-expanded', String(shouldOpen));
+  if (shouldOpen) startChat();
+}
+
+function startChat() {
+  if (!guidedChatStarted) {
+    guidedChatStarted = true;
+    resetGuidedChat();
+  }
+}
+
+function resetGuidedChat() {
+  guidedCurrentCategory = null;
+  guidedCurrentItem = null;
+  clearChatMessages();
+  addChatMessage('bot', 'Hola, soy el asistente de Tramitium. Le guío paso a paso para encontrar información sobre su trámite.');
+  addChatMessage('bot', 'Seleccione una categoría para empezar.');
+  renderGuidedOptions([
+    { label: 'Registro de la Propiedad', action: () => showGuidedCategory('propiedad') },
+    { label: 'Registro Civil', action: () => showGuidedCategory('civil') },
+    { label: 'Registro Mercantil', action: () => showGuidedCategory('mercantil') },
+    { label: 'DGT y vehículos', action: () => showGuidedCategory('dgt') },
+    { label: 'Contratos privados', action: () => showGuidedCategory('contratos') },
+    { label: 'Precios y pago', className: 'primary', action: showGuidedPrices },
+    { label: 'Hablar con Tramitium', action: showGuidedContact }
+  ]);
+}
+
+function showGuidedCategory(categoryKey) {
+  const category = GUIDED_CHAT[categoryKey];
+  guidedCurrentCategory = categoryKey;
+  guidedCurrentItem = null;
+  addChatMessage('user', category.title);
+  addChatMessage('bot', `${category.title}. ${category.intro}`);
+  const options = Object.keys(category.items).map(itemKey => ({
+    label: category.items[itemKey].title,
+    action: () => showGuidedItem(categoryKey, itemKey)
+  }));
+  options.push({ label: 'Volver al inicio', className: 'muted', action: resetGuidedChat });
+  renderGuidedOptions(options);
+}
+
+function showGuidedItem(categoryKey, itemKey) {
+  const item = GUIDED_CHAT[categoryKey].items[itemKey];
+  guidedCurrentCategory = categoryKey;
+  guidedCurrentItem = itemKey;
+  addChatMessage('user', item.title);
+  addChatMessage('bot', `${item.title}. ¿Qué necesita saber?`);
+  renderGuidedItemOptions();
+}
+
+function renderGuidedItemOptions() {
+  const item = GUIDED_CHAT[guidedCurrentCategory].items[guidedCurrentItem];
+  const options = Object.keys(GUIDED_QUESTION_LABELS).map(questionKey => ({
+    label: GUIDED_QUESTION_LABELS[questionKey],
+    action: () => showGuidedAnswer(questionKey)
+  }));
+  if (item.serviceKey && SERVICES[item.serviceKey]) {
+    options.push({ label: 'Quiero solicitarlo', className: 'primary', action: () => openGuidedService(item.serviceKey) });
+  }
+  options.push(
+    { label: 'Ver otro trámite', action: () => showGuidedCategory(guidedCurrentCategory) },
+    { label: 'Volver al inicio', className: 'muted', action: resetGuidedChat },
+    { label: 'No resuelve mi duda', action: showGuidedContact }
+  );
+  renderGuidedOptions(options);
+}
+
+function showGuidedAnswer(questionKey) {
+  const item = GUIDED_CHAT[guidedCurrentCategory].items[guidedCurrentItem];
+  addChatMessage('user', GUIDED_QUESTION_LABELS[questionKey]);
+  addChatMessage('bot', item.answers[questionKey]);
+  renderGuidedOptions([
+    { label: 'Ver otra información de este trámite', action: renderGuidedItemOptions },
+    { label: 'Ver otro trámite', action: () => showGuidedCategory(guidedCurrentCategory) },
+    item.serviceKey && SERVICES[item.serviceKey] ? { label: 'Quiero solicitarlo', className: 'primary', action: () => openGuidedService(item.serviceKey) } : null,
+    { label: 'No resuelve mi duda', action: showGuidedContact }
+  ].filter(Boolean));
+}
+
+function showGuidedPrices() {
+  addChatMessage('user', 'Precios y pago');
+  addChatMessage('bot', 'Los precios aparecen junto a cada trámite. Como referencia: Nota Simple Informativa desde 35 €, Nota de Localización desde 25 €, Nota Simple Mercantil desde 25 € e Informe de Tráfico por matrícula desde 25 €. El pago se realiza de forma segura con Stripe.');
+  renderGuidedOptions([
+    { label: 'Ver trámites', action: resetGuidedChat },
+    { label: 'Hablar con Tramitium', action: showGuidedContact }
+  ]);
+}
+
+function showGuidedContact() {
+  addChatMessage('user', 'No resuelve mi duda');
+  addChatMessage('bot', `Para una respuesta personalizada, escríbanos a ${CHAT_CONTACT_EMAIL}. Le responderemos en menos de 24 horas.`);
+  renderGuidedOptions([
+    { label: 'Volver al inicio', action: resetGuidedChat },
+    { label: 'Cerrar chat', className: 'muted', action: () => toggleChat(false) }
+  ]);
+}
+
+function openGuidedService(serviceKey) {
+  addChatMessage('user', 'Quiero solicitarlo');
+  addChatMessage('bot', 'Perfecto. Le llevo al formulario del trámite seleccionado.');
+  setTimeout(() => {
+    toggleChat(false);
+    openModal(serviceKey);
+  }, 350);
+}
+
+function renderGuidedOptions(options) {
+  const container = document.getElementById('chatQuickActions');
+  container.innerHTML = '';
+  options.forEach(option => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `chat-chip ${option.className || ''}`.trim();
+    button.textContent = option.label;
+    button.addEventListener('click', option.action);
+    container.appendChild(button);
+  });
+}
+
+function clearChatMessages() {
+  const messages = document.getElementById('chatMessages');
+  if (messages) messages.innerHTML = '';
 }
 
 </script>
