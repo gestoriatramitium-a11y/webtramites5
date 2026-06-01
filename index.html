@@ -232,9 +232,9 @@
   .chat-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); }
   .chat-send { border: none; background: var(--gold); color: var(--navy); width: 46px; flex-shrink: 0; cursor: pointer; font-size: 18px; transition: all 0.2s; }
   .chat-send:hover { background: var(--gold-light); }
-  .chat-launcher { border: none; background: var(--gold); color: var(--navy); min-width: 190px; min-height: 54px; padding: 0 20px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-size: 13px; font-weight: 500; letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer; box-shadow: 0 12px 34px rgba(7,15,31,0.28); transition: all 0.25s; }
+  .chat-launcher { border: none; background: var(--gold); color: var(--navy); min-width: 190px; min-height: 54px; padding: 0 22px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-size: 13px; font-weight: 500; letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer; box-shadow: 0 12px 34px rgba(7,15,31,0.28); transition: all 0.25s; }
   .chat-launcher:hover { background: var(--gold-light); transform: translateY(-2px); }
-  .chat-launcher-icon { font-size: 18px; line-height: 1; }
+  .chat-launcher-icon { width: 10px; height: 10px; border-radius: 50%; background: var(--navy); box-shadow: 0 0 0 4px rgba(15,30,60,0.12); flex-shrink: 0; }
   @keyframes chatEnter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
   .reveal { opacity: 1; transform: none; }
@@ -441,7 +441,7 @@
         <h2 class="chat-header-title" id="chatTitle">Asistente Tramitium</h2>
         <p class="chat-header-subtitle">Respuestas rápidas sobre trámites, precios y plazos.</p>
       </div>
-      <button class="chat-close" type="button" onclick="toggleChat(false)" aria-label="Cerrar chat">✕</button>
+      <button class="chat-close" id="chatCloseBtn" type="button" aria-label="Cerrar chat">✕</button>
     </div>
     <div class="chat-messages" id="chatMessages"></div>
     <div class="chat-quick-actions" id="chatQuickActions" aria-label="Preguntas frecuentes"></div>
@@ -450,11 +450,39 @@
       <button class="chat-send" type="submit" aria-label="Enviar pregunta">→</button>
     </form>
   </section>
-  <button class="chat-launcher" type="button" onclick="toggleChat()" aria-controls="chatWidget" aria-expanded="false">
-    <span class="chat-launcher-icon">?</span>
+  <button class="chat-launcher" id="chatLauncherBtn" type="button" aria-controls="chatWidget" aria-expanded="false">
+    <span class="chat-launcher-icon" aria-hidden="true"></span>
     <span>¿Necesita ayuda?</span>
   </button>
 </div>
+
+<script>
+(function () {
+  window.toggleChat = function (forceOpen) {
+    var widget = document.getElementById('chatWidget');
+    if (!widget) return;
+    var launcher = document.getElementById('chatLauncherBtn');
+    var shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !widget.classList.contains('open');
+    widget.classList.toggle('open', shouldOpen);
+    if (launcher) launcher.setAttribute('aria-expanded', String(shouldOpen));
+
+    var messages = document.getElementById('chatMessages');
+    if (shouldOpen && messages && !messages.children.length) {
+      var message = document.createElement('div');
+      message.className = 'chat-message bot';
+      message.textContent = 'Hola, soy el asistente de Tramitium. Puede preguntarme por trámites, precios, plazos o documentación.';
+      messages.appendChild(message);
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var launcher = document.getElementById('chatLauncherBtn');
+    var close = document.getElementById('chatCloseBtn');
+    if (launcher) launcher.addEventListener('click', function () { window.toggleChat(); });
+    if (close) close.addEventListener('click', function () { window.toggleChat(false); });
+  });
+})();
+</script>
 
 <script>
 // IMPORTANTE:
