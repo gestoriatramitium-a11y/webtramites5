@@ -448,7 +448,7 @@
     <div class="chat-messages" id="chatMessages"></div>
     <div class="chat-quick-actions" id="chatQuickActions" aria-label="Opciones del asistente"></div>
   </section>
-  <button class="chat-launcher" id="chatLauncherBtn" type="button" aria-controls="chatWidget" aria-expanded="false">
+  <button class="chat-launcher" id="chatLauncherBtn" type="button" onclick="toggleChat()" aria-controls="chatWidget" aria-expanded="false">
     <span class="chat-launcher-icon" aria-hidden="true"></span>
     <span>¿Necesita ayuda?</span>
   </button>
@@ -802,17 +802,7 @@ function showEmailWarning(ref, paymentIntentId) {
 }
 
 const CHAT_CONTACT_EMAIL = 'contactos@tramitium.es';
-let chatQuestionCount = 0;
-let chatAwaitingResolution = false;
 let chatStarted = false;
-
-const CHAT_SUGGESTIONS = [
-  '¿Qué servicios ofrecéis?',
-  '¿Cuánto cuesta una nota simple?',
-  '¿Cuánto tardáis?',
-  '¿Cómo se paga?',
-  'Necesito contactar'
-];
 
 const CHAT_KNOWLEDGE = [
   {
@@ -932,122 +922,6 @@ const CHAT_KNOWLEDGE = [
   }
 ];
 
-function toggleChat(forceOpen) {
-  const widget = document.getElementById('chatWidget');
-  const launcher = widget.querySelector('.chat-launcher');
-  const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !widget.classList.contains('open');
-  widget.classList.toggle('open', shouldOpen);
-  launcher.setAttribute('aria-expanded', String(shouldOpen));
-  if (shouldOpen) {
-    startChat();
-    setTimeout(() => document.getElementById('chatInput').focus(), 50);
-  }
-}
-
-function startChat() {
-  if (chatStarted) return;
-  chatStarted = true;
-  addChatMessage('bot', 'Hola, soy el asistente de Tramitium. Puedo ayudarle con servicios, precios, plazos, pagos y cómo iniciar un trámite.');
-  renderChatSuggestions();
-}
-
-function renderChatSuggestions() {
-  const container = document.getElementById('chatQuickActions');
-  container.innerHTML = CHAT_SUGGESTIONS.map(item => `<button class="chat-chip" type="button" onclick="askChatSuggestion('${escapeHTML(item)}')">${escapeHTML(item)}</button>`).join('');
-}
-
-function askChatSuggestion(text) {
-  document.getElementById('chatInput').value = text;
-  handleChatQuestion(text);
-}
-
-function submitChatMessage(event) {
-  event.preventDefault();
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = '';
-  handleChatQuestion(text);
-}
-
-function handleChatQuestion(text) {
-  addChatMessage('user', text);
-
-  if (chatAwaitingResolution) {
-    handleResolutionAnswer(text);
-    return;
-  }
-
-  chatQuestionCount += 1;
-  const answer = getChatAnswer(text);
-  addChatMessage('bot', answer);
-
-  if (chatQuestionCount >= 3) {
-    chatAwaitingResolution = true;
-    setTimeout(() => addChatMessage('bot', '¿He resuelto su duda? Puede responder sí o no.'), 250);
-  }
-}
-
-function handleResolutionAnswer(text) {
-  const normalized = normalizeChatText(text);
-  chatAwaitingResolution = false;
-
-  if (/\b(no|aun no|todavia no|todavía no|negativo|no gracias)\b/.test(normalized)) {
-    addChatMessage('bot', `Lamento no haber resuelto la duda. Para una respuesta personalizada, le recomendamos escribir a ${CHAT_CONTACT_EMAIL}. Nuestro equipo le responderá en menos de 24 horas.`);
-    return;
-  }
-
-  if (/\b(si|sí|claro|perfecto|gracias|resuelto|vale)\b/.test(normalized)) {
-    addChatMessage('bot', 'Perfecto. Me alegra haberle ayudado. Si necesita iniciar un trámite, puede hacerlo desde la sección de servicios.');
-    chatQuestionCount = 0;
-    return;
-  }
-
-  addChatMessage('bot', `Si aún necesita ayuda personalizada, escríbanos a ${CHAT_CONTACT_EMAIL} y le responderemos en menos de 24 horas.`);
-}
-
-function getChatAnswer(question) {
-  const normalized = normalizeChatText(question);
-  const matched = findBestChatKnowledge(normalized);
-  if (matched) return matched.answer;
-
-  const serviceMatch = findServiceByQuestion(normalized);
-  if (serviceMatch) {
-    return `${serviceMatch.title}: ${serviceMatch.info} Precio indicado en la web: ${serviceMatch.price} €.`;
-  }
-
-  return `Puedo orientarle sobre servicios, precios, plazos, pagos y contacto. Para casos muy concretos, escriba a ${CHAT_CONTACT_EMAIL} y le responderemos en menos de 24 horas.`;
-}
-
-function findBestChatKnowledge(normalizedQuestion) {
-  let bestMatch = null;
-  let bestScore = 0;
-
-  CHAT_KNOWLEDGE.forEach(item => {
-    const title = normalizeChatText(item.title || '');
-    let score = title && normalizedQuestion.includes(title) ? 8 : 0;
-
-    item.keywords.forEach(keyword => {
-      const normalizedKeyword = normalizeChatText(keyword);
-      if (!normalizedKeyword || !normalizedQuestion.includes(normalizedKeyword)) return;
-      score += normalizedKeyword.length > 12 ? 4 : 2;
-    });
-
-    if (score > bestScore) {
-      bestScore = score;
-      bestMatch = item;
-    }
-  });
-
-  return bestScore > 0 ? bestMatch : null;
-}
-
-function findServiceByQuestion(normalizedQuestion) {
-  return Object.values(SERVICES).find(service => {
-    const title = normalizeChatText(service.title);
-    return title.split(' ').filter(word => word.length > 3).some(word => normalizedQuestion.includes(word));
-  });
-}
 
 function normalizeChatText(value) {
   return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
